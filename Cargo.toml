@@ -1,0 +1,38 @@
+[package]
+name = "bevy_gltf_basisu"
+authors = ["jiang heng <https://github.com/jiangheng90/>"]
+description = "Bevy plugin providing KHR_texture_basisu support for the glTF loader"
+repository = "https://github.com/jiangheng90-opensource/bevy_gltf_basisu"
+homepage = "https://github.com/jiangheng90-opensource/bevy_gltf_basisu"
+keywords = ["bevy", "gltf", "ktx2", "basisu", "transcoder"]
+license = "MIT OR Apache-2.0"
+version = "0.1.0"
+edition = "2024"
+exclude = ["assets/**", "examples/**", "target/**"]
+
+[dependencies]
+# NOTE: requires the `on_texture_load` glTF extension hook, which is not yet
+# in a bevy release. See https://github.com/bevyengine/bevy/pull/25669
+bevy = { git = "https://github.com/jiangheng90-opensource/bevy.git", branch = "gltf-texture-load-hook", default-features = false, features = [
+    "std",
+    "bevy_asset",
+    "bevy_gltf",
+    "bevy_image",
+    "bevy_log",
+    "bevy_mesh",
+] }
+# TODO: switch back to the crates.io release once a version with zstd
+# supercompression support (BASISD_SUPPORT_KTX2_ZSTD) is published.
+basis_transcoder = { path = "../basis_transcoder" }
+base64 = "0.23.0"
+percent-encoding = "2.1"
+serde_json = "1.0.140"
+tracing = { version = "0.1", default-features = false, features = ["std"] }
+wgpu-types = "30"
+
+[dev-dependencies]
+bevy = { git = "https://github.com/jiangheng90-opensource/bevy.git", branch = "gltf-texture-load-hook", features = [
+    "jpeg",
+    "pbr_transmission_textures",
+    "pbr_multi_layer_material_textures",
+] }
