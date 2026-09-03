@@ -1,0 +1,31 @@
+{
+  "name": "bevy_gltf_basisu",
+  "version": "0.1.0",
+  "description": "bevy glTF KHR_texture_basisu decoder plugin",
+  "keywords": [
+    "bevy",
+    "gltf",
+    "ktx2",
+    "basisu"
+  ],
+  "homepage": "https://github.com/jiangheng90-opensource/bevy_gltf_basisu#readme",
+  "bugs": {
+    "url": "https://github.com/jiangheng90-opensource/bevy_gltf_basisu/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jiangheng90-opensource/bevy_gltf_basisu.git"
+  },
+  "license": "MIT OR Apache-2.0",
+  "author": "jiangheng <https://github.com/jiangheng90>",
+  "scripts": {
+    "build": "node tools/wasm_build.js main --sync-assets",
+    "serve": "npx serve examples/wasm",
+    "start": "npm run build && npm run serve",
+    "publish": "cargo publish --allow-dirty --no-verify"
+  },
+  "devDependencies": {
+    "serve": "^14.2.0",
+    "open": "^10.0.0"
+  }
+}

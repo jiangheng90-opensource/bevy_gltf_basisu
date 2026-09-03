@@ -44,10 +44,9 @@ fn expected_mip_data_len(image: &Image) -> usize {
     let desc = &image.texture_descriptor;
     let mut expected = 0;
     for level in 0..desc.mip_level_count {
-        expected
-            += (desc.size.width as usize >> level).max(1)
-                * (desc.size.height as usize >> level).max(1)
-                * 4;
+        expected += (desc.size.width as usize >> level).max(1)
+            * (desc.size.height as usize >> level).max(1)
+            * 4;
     }
     expected
 }

@@ -24,6 +24,7 @@
 //! }
 //! ```
 
+use basis_transcoder::{TargetFormat, TranscodedTexture};
 use bevy::asset::{AssetPath, LoadContext, RenderAssetUsages};
 use bevy::gltf::extensions::{ErasedGltfExtensionHandler, GltfExtensionHandler};
 use bevy::gltf::gltf::{self, Gltf as JsonGltf, Texture};
@@ -33,7 +34,6 @@ use bevy::{
     gltf::extensions::GltfExtensionHandlers,
     log::error,
 };
-use basis_transcoder::{TargetFormat, TranscodedTexture};
 use wgpu_types::{
     AstcBlock, AstcChannel, Extent3d, TextureDataOrder, TextureDimension, TextureFormat,
 };
@@ -196,7 +196,9 @@ impl GltfBasisuDecoderExtensionHandler {
                 Some(buffer_data.get(view.buffer().index())?[start..end].to_vec())
             }
             gltf::image::Source::Uri { uri, .. } => {
-                let uri = percent_encoding::percent_decode_str(uri).decode_utf8().ok()?;
+                let uri = percent_encoding::percent_decode_str(uri)
+                    .decode_utf8()
+                    .ok()?;
                 if uri.starts_with("data:") {
                     decode_data_uri(&uri)
                 } else {
@@ -231,9 +233,14 @@ impl GltfExtensionHandler for GltfBasisuDecoderExtensionHandler {
             // loader handle it.
             return;
         }
-        let Some(bytes) =
-            Self::image_bytes(load_context, gltf_document, gltf_texture, buffer_data, gltf_path)
-                .await
+        let Some(bytes) = Self::image_bytes(
+            load_context,
+            gltf_document,
+            gltf_texture,
+            buffer_data,
+            gltf_path,
+        )
+        .await
         else {
             error!(
                 "failed to resolve KHR_texture_basisu image (texture {})",
