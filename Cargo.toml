@@ -23,7 +23,7 @@ bevy = { git = "https://github.com/jiangheng90-opensource/bevy.git", branch = "g
 ] }
 # TODO: switch back to the crates.io release once a version with zstd
 # supercompression support (BASISD_SUPPORT_KTX2_ZSTD) is published.
-basis_transcoder = { path = "../basis_transcoder" }
+basis_transcoder = { git = "https://github.com/jiangheng90-opensource/basis_transcoder.git" }
 base64 = "0.23.0"
 percent-encoding = "2.1"
 serde_json = "1.0.140"
