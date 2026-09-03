@@ -3,3 +3,4 @@ Cargo.lock
 .DS_Store
 node_modules/
 examples/wasm/target/
+examples/wasm/assets/
