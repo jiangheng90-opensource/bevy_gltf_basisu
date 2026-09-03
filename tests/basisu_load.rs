@@ -131,5 +131,11 @@ fn load_gltf_with_khr_texture_basisu() {
 
     // Level 0 must not decode to a solid color.
     let first = &data[0..4];
-    assert!(data[..16 * 28 * 4].chunks_exact(4).any(|p| p != first));
+    assert!(
+        data[..16 * 28 * 4]
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .any(|p| p != first)
+    );
 }

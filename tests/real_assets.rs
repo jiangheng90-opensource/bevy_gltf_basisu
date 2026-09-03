@@ -59,7 +59,13 @@ fn assert_transcoded(image: &Image, expected_format: TextureFormat) {
     // Level 0 must not decode to a solid color.
     let level0_len = desc.size.width as usize * desc.size.height as usize * 4;
     let first = &data[0..4];
-    assert!(data[..level0_len].chunks_exact(4).any(|p| p != first));
+    assert!(
+        data[..level0_len]
+            .as_chunks::<4>()
+            .0
+            .iter()
+            .any(|p| p != first)
+    );
 }
 
 #[test]
