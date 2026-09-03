@@ -60,7 +60,8 @@ asset_server
    - native: official C++ transcoder over `cxx`, target picked from the
      GPU's supported compressed formats (BC7 > ETC2 > ASTC > RGBA8);
    - wasm: the official prebuilt Emscripten transcoder running in an inline
-     Web Worker, targeting RGBA8.
+     Web Worker, targeting the reported compressed formats with an RGBA8
+     fallback.
 4. Textures without the extension fall through to bevy's default loading,
    unchanged (and still parallel).
 

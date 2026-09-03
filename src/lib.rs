@@ -50,24 +50,19 @@ fn is_ktx2(buffer: &[u8]) -> bool {
 
 /// Picks the best transcode target for the GPU's compressed-format support,
 /// falling back to uncompressed RGBA8 ([`CompressedImageFormats::NONE`]).
-/// WASM always transcodes to RGBA8 (no GPU capability information).
+///
+/// On WASM the reported formats may be empty (no GPU capability information
+/// at load time, e.g. when the render device is not initialized yet), in
+/// which case the RGBA8 fallback applies.
 fn select_target_format(formats: CompressedImageFormats) -> TargetFormat {
-    #[cfg(target_arch = "wasm32")]
-    {
-        let _ = formats;
+    if formats.contains(CompressedImageFormats::BC) {
+        TargetFormat::Bc7Rgba
+    } else if formats.contains(CompressedImageFormats::ETC2) {
+        TargetFormat::Etc2Rgba
+    } else if formats.contains(CompressedImageFormats::ASTC_LDR) {
+        TargetFormat::Astc4x4Rgba
+    } else {
         TargetFormat::Rgba32
-    }
-    #[cfg(not(target_arch = "wasm32"))]
-    {
-        if formats.contains(CompressedImageFormats::BC) {
-            TargetFormat::Bc7Rgba
-        } else if formats.contains(CompressedImageFormats::ETC2) {
-            TargetFormat::Etc2Rgba
-        } else if formats.contains(CompressedImageFormats::ASTC_LDR) {
-            TargetFormat::Astc4x4Rgba
-        } else {
-            TargetFormat::Rgba32
-        }
     }
 }
 
@@ -296,5 +291,32 @@ impl Plugin for GltfBasisuDecoderPlugin {
             .0
             .write_blocking()
             .push(Box::new(GltfBasisuDecoderExtensionHandler));
+    }
+}
+
+#[cfg(all(test, not(target_arch = "wasm32")))]
+mod tests {
+    use super::*;
+
+    #[test]
+    fn select_target_format_prefers_compressed_then_rgba8() {
+        assert!(matches!(
+            select_target_format(CompressedImageFormats::BC),
+            TargetFormat::Bc7Rgba
+        ));
+        assert!(matches!(
+            select_target_format(CompressedImageFormats::ETC2),
+            TargetFormat::Etc2Rgba
+        ));
+        assert!(matches!(
+            select_target_format(CompressedImageFormats::ASTC_LDR),
+            TargetFormat::Astc4x4Rgba
+        ));
+        // No capabilities reported (e.g. wasm without GPU info at load time)
+        // falls back to uncompressed RGBA8.
+        assert!(matches!(
+            select_target_format(CompressedImageFormats::NONE),
+            TargetFormat::Rgba32
+        ));
     }
 }
